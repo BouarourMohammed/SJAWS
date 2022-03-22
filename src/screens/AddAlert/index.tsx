@@ -83,6 +83,7 @@ export const AddAlertScreen: React.FC = () => {
   );
 
   const handlePointSubmit = async (data: any) => {
+    dispatch(setAlert(<LoadingAlert />));
     if (params?.id) {
       editByIdAuth(data, "points", params.id)
         .then((res) => {

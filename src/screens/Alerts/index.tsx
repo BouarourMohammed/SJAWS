@@ -126,7 +126,11 @@ export const AlertScreen: React.FC = () => {
     []
   );
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}
+    >
       <Text style={styles.title}>Point Alerts</Text>
 
       <View
@@ -166,8 +170,9 @@ export const AlertScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingHorizontal: 20,
     paddingTop: "10%",
+    paddingBottom: "5%",
     backgroundColor: COLORS.white,
   },
   headerContainer: {
@@ -175,8 +180,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderBottomWidth: 1,
     borderBottomColor: COLORS.borderColor,
-    //borderTopWidth: 1,
-    //borderTopColor: COLORS.borderColor,
     paddingVertical: 10,
   },
   headerText: {
