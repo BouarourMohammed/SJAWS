@@ -14,10 +14,14 @@ import { FailureAlert, LoadingAlert } from "../../components/Alerts";
 import { Button } from "../../components/Button";
 import { FormSubmitButton } from "../../components/FormSubmitButton";
 import { TextField } from "../../components/TextInput";
+import { TextInputList } from "../../components/TextInputList";
 import { RootStackParamList } from "../../navigation/main";
 import { clearAlert, setAlert, setNavigation, useNavState } from "../../state";
-import { PointAlertFormValidationSchema } from "./schema";
-import { TextInputList } from "./TextInputList";
+import {
+  isNotCoordinate,
+  isNotValid,
+  PointAlertFormValidationSchema,
+} from "./schema";
 
 type AddAlertScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -42,27 +46,6 @@ export const AddAlertScreen: React.FC = () => {
 
   const [pointArea, setPointArea] = useState(initialPointArea);
 
-  const isNotValid = (value: number[][]) => {
-    return value.some((element) => {
-      if (isNaN(Number(element[0])) || isNaN(Number(element[1]))) {
-        return true;
-      }
-    });
-  };
-
-  const isNotCoordinate = (value: number[][]) => {
-    return value.some((element) => {
-      if (
-        Number(element[0]) > 90 ||
-        Number(element[0]) < -90 ||
-        Number(element[1]) > 90 ||
-        Number(element[1]) < -90
-      ) {
-        return true;
-      }
-    });
-  };
-
   const [errorValidation, setErrorValidation] = useState("");
 
   const handlePolygonSubmit = useCallback(
@@ -70,11 +53,17 @@ export const AddAlertScreen: React.FC = () => {
       dispatch(setAlert(<LoadingAlert />));
       if (isNotValid(data)) {
         setErrorValidation("Values must be a number");
+
         return;
+      } else {
+        if (isNotCoordinate(data)) {
+          setErrorValidation("Values must be between +90 and -90");
+          return;
+        }
       }
       errorValidation && setErrorValidation("");
       if (params?.id) {
-        editByIdAuth(data, "polygons", params.id)
+        editByIdAuth(data, "polygons", params?.id)
           .then(() => {
             dispatch(clearAlert());
             navigation.navigate("AlertScreen");
@@ -94,21 +83,19 @@ export const AddAlertScreen: React.FC = () => {
 
   const handlePointSubmit = async (data: any) => {
     if (params?.id) {
-      console.log("updating id :" + params.id);
-
       editByIdAuth(data, "points", params.id)
         .then((res) => {
-          //  console.log(res);
-
+          dispatch(clearAlert());
           navigation.navigate("AlertScreen");
         })
-        .catch();
+        .catch(() => dispatch(setAlert(<FailureAlert />)));
     } else {
       create(data, "points")
         .then(() => {
+          dispatch(clearAlert());
           navigation.navigate("AlertScreen");
         })
-        .catch();
+        .catch(() => dispatch(setAlert(<FailureAlert />)));
     }
   };
 
@@ -116,19 +103,20 @@ export const AddAlertScreen: React.FC = () => {
     setLong("");
     setLat("");
     setRadius("");
-    setPointArea(initialPointArea);
+    //setPointArea(initialPointArea);
   }, []);
 
   useEffect(() => {
+    // each time this screen not focused the form will be reinitialized
     if (!nav) resetPointForm();
+
+    //
     if (params?.type === "points" && nav) {
       getByIdAuth("points", params?.id)
         .then((res) => {
-          // console.log(res?.data);
-
-          let long = res?.data.location.coordinates[0];
-          let lat = res?.data.location.coordinates[1];
-          let radius = res?.data.radius;
+          let long = res?.data?.location?.coordinates[0];
+          let lat = res?.data?.location?.coordinates[1];
+          let radius = res?.data?.radius;
           setLong(long);
           setLat(lat);
           setRadius(radius);
@@ -138,7 +126,6 @@ export const AddAlertScreen: React.FC = () => {
     if (params?.type === "polygons" && nav) {
       getByIdAuth("polygons", params?.id)
         .then((res) => {
-          // console.log(res.data.location.coordinates[0]);
           setPointArea({
             numOfPoints: res?.data.location.coordinates[0].length,
             locations: res?.data.location.coordinates[0],
@@ -146,6 +133,8 @@ export const AddAlertScreen: React.FC = () => {
         })
         .catch((err) => console.log(err));
     }
+
+    // params has been expired
     dispatch(setNavigation(false));
   }, [focused]);
 
@@ -189,7 +178,9 @@ export const AddAlertScreen: React.FC = () => {
             keyboardType={"numeric"}
             style={{ marginBottom: 10, paddingLeft: 16 }}
           />
-          <View style={{ flexDirection: "row", marginBottom: 20 }}>
+          <View
+            style={{ flexDirection: "row", marginBottom: 20, marginTop: 5 }}
+          >
             <FormSubmitButton
               textStyle={{ color: COLORS.white }}
               style={{

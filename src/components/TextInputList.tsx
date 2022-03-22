@@ -8,7 +8,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { COLORS } from "../../assets/colors";
+import { COLORS } from "../assets/colors";
 
 type ButtonProp = {
   name: string;
