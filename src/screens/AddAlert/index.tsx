@@ -51,7 +51,6 @@ export const AddAlertScreen: React.FC = () => {
 
   const handlePolygonSubmit = useCallback(
     async (data: any) => {
-      dispatch(setAlert(<LoadingAlert />));
       if (isNotValid(data)) {
         setErrorValidation("Values must be a number");
 
@@ -63,6 +62,7 @@ export const AddAlertScreen: React.FC = () => {
         }
       }
       errorValidation && setErrorValidation("");
+      dispatch(setAlert(<LoadingAlert />));
       if (params?.id) {
         editByIdAuth(data, "polygons", params?.id)
           .then(() => {
@@ -122,6 +122,7 @@ export const AddAlertScreen: React.FC = () => {
       // in this case we initialize the polygon form by deleting the form
       // otherwise use resetPolygonForm()
       setPointArea(initialPointArea);
+      setErrorValidation("");
 
       //no need to fetch data "clean form"
       return;
