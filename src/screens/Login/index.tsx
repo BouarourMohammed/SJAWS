@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { Formik } from "formik";
 import React, { Fragment } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { COLORS } from "../../assets/colors";
 import { Button } from "../../components/Button";
 import { FormSubmitButton } from "../../components/FormSubmitButton";
@@ -53,13 +53,12 @@ export const LoginScreen: React.FC = () => {
     }
   };
 
-  const navitegation = useNavigation();
   return (
     <View style={styles.container}>
       <Formik
         initialValues={{
           email: "admin@admin.com",
-          password: "123456789",
+          password: "12345678",
         }}
         onSubmit={clickSubmit}
         enableReinitialize

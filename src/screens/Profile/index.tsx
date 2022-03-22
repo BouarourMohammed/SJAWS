@@ -2,7 +2,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import axios from "axios";
 import { Formik } from "formik";
 import React, { Fragment, useCallback } from "react";
-import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { COLORS } from "../../assets/colors";
 import { FormSubmitButton } from "../../components/FormSubmitButton";
 import { PasswordField } from "../../components/PasswordField";
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: COLORS.white,
     padding: 30,
-    paddingTop: 40,
+    paddingTop: 50,
   },
   title: {
     fontSize: 30,

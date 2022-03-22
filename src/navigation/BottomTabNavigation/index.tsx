@@ -46,7 +46,7 @@ export const BottomTabNavigation: React.FC = () => {
   const admin: boolean = user?.role === "admin";
   return (
     <Tab.Navigator
-      initialRouteName="AlertScreen"
+      initialRouteName="HomeScreen"
       screenOptions={{
         headerShown: false,
         tabBarStyle: styles.container,

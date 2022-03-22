@@ -1,9 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { Fragment } from "react";
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
-import { getAllAuth } from "../../api/common";
-import { COLORS } from "../../assets/colors";
-import { Button } from "../../components/Button";
+import { getAllAuth } from "../api/common";
+import { COLORS } from "../assets/colors";
+import { Button } from "./Button";
 
 type SubscriptionsCardProp = {
   type: string;

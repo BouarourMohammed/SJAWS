@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { getAllAuth } from "../../api/common";
 import { SubscriptionIcon } from "../../assets/icons";
 import { Divider } from "../../components/Divider";
-import { SubscriptionsCard } from "./SubscriptionsCard";
+import { SubscriptionsCard } from "../../components/SubscriptionsCard";
 
 export const AccountScreen: React.FC = () => {
   const [subscriptions, setSubscriptions] = useState([]);
