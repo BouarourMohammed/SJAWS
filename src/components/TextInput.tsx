@@ -15,7 +15,6 @@ import { COLORS } from "../assets/colors";
 interface TextFieldProps {
   name: string;
   placeholder: string;
-  value?: string;
   style?: StyleProp<ViewStyle> | undefined;
   keyboardType?: KeyboardTypeOptions | undefined;
   editable?: boolean;
@@ -24,7 +23,6 @@ interface TextFieldProps {
 
 export const TextField: React.FC<TextFieldProps> = (props) => {
   const [field, { touched, error }, helpers] = useField<string>(props.name);
-
   return useMemo(
     () => (
       <View style={[styles.container, props.style]}>
@@ -40,12 +38,11 @@ export const TextField: React.FC<TextFieldProps> = (props) => {
           onChangeText={helpers.setValue}
           placeholderTextColor={COLORS.grey}
           value={field.value}
-          {...props.others}
         />
         {touched && error && <Text style={styles.errorText}>{error}</Text>}
       </View>
     ),
-    [field.value, touched, error, props.value]
+    [field.value, touched, error]
   );
 };
 

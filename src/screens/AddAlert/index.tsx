@@ -4,7 +4,7 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Formik } from "formik";
+import { Formik, useFormikContext } from "formik";
 import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useDispatch } from "react-redux";
@@ -12,6 +12,7 @@ import { create, editByIdAuth, getByIdAuth } from "../../api/common";
 import { COLORS } from "../../assets/colors";
 import { FailureAlert, LoadingAlert } from "../../components/Alerts";
 import { Button } from "../../components/Button";
+import { FormResetButton } from "../../components/FormResetButton";
 import { FormSubmitButton } from "../../components/FormSubmitButton";
 import { TextField } from "../../components/TextInput";
 import { TextInputList } from "../../components/TextInputList";
@@ -106,11 +107,26 @@ export const AddAlertScreen: React.FC = () => {
     //setPointArea(initialPointArea);
   }, []);
 
+  const resetPolygonForm = useCallback(() => {
+    setPointArea({
+      ...pointArea,
+      locations: pointArea.locations.map((item) => [0, 0]),
+    });
+  }, [pointArea]);
+
   useEffect(() => {
     // each time this screen not focused the form will be reinitialized
-    if (!nav) resetPointForm();
+    if (!nav) {
+      resetPointForm();
+      // in this case we initialize the polygon form by deleting the form
+      // otherwise use resetPolygonForm()
+      setPointArea(initialPointArea);
 
-    //
+      //no need to fetch data "clean form"
+      return;
+    }
+
+    //fetch data (point or polygon) for editing
     if (params?.type === "points" && nav) {
       getByIdAuth("points", params?.id)
         .then((res) => {
@@ -191,8 +207,7 @@ export const AddAlertScreen: React.FC = () => {
               }}
               title={"Submit"}
             />
-            <Button
-              variant="TYPE1"
+            <FormResetButton
               title="Reset"
               style={{ paddingHorizontal: 20 }}
               onPress={resetPointForm}
@@ -287,16 +302,10 @@ export const AddAlertScreen: React.FC = () => {
                 }}
                 title={"Submit"}
               />
-              <Button
-                variant="TYPE1"
+              <FormResetButton
                 title="Reset"
                 style={{ paddingHorizontal: 20 }}
-                onPress={() =>
-                  setPointArea({
-                    ...pointArea,
-                    locations: pointArea.locations.map((item) => [0, 0]),
-                  })
-                }
+                onPress={resetPolygonForm}
               />
             </View>
           </Fragment>
