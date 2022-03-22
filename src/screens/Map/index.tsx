@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
-import MapView, { Marker, Polygon } from "react-native-maps";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import MapView, { Callout, Circle, Marker, Polygon } from "react-native-maps";
 import { useDispatch } from "react-redux";
 import { apiData } from "../../api/appinfo";
 import { getAllAuth } from "../../api/common";
@@ -8,8 +8,8 @@ import { COLORS } from "../../assets/colors";
 import { FailureAlert } from "../../components/Alerts";
 import { setAlert, useProfile } from "../../state";
 
-let id = 0;
-const inale = require("../../assets/img/marker-icon-2x.png");
+const image = require("../../assets/img/marker-icon-3x.png");
+
 export const MapScreen: React.FC = () => {
   const dispatch = useDispatch();
   const { user } = useProfile();
@@ -71,18 +71,52 @@ export const MapScreen: React.FC = () => {
             polygons.map((polygon, index) => (
               <Polygon
                 key={index}
-                strokeWidth={2}
-                strokeColor="green"
-                /*coordinates={polygon?.location?.coordinates?.map((item) => ({
-                  latitude: item[0],
-                  longitude: item[1],
-                }))}*/
-                coordinates={[
-                  { latitude: 15, longitude: 20 },
-                  { latitude: 77, longitude: 12 },
-                  { latitude: 15, longitude: 14 },
-                ]}
+                strokeWidth={2.5}
+                strokeColor={COLORS.green}
+                fillColor={COLORS.lightGreen}
+                coordinates={polygon?.location?.coordinates?.[0]?.map(
+                  (item) => ({
+                    latitude: item[0],
+                    longitude: item[1],
+                  })
+                )}
               />
+            ))}
+          {points &&
+            points.length > 0 &&
+            points.map((point, index) => (
+              <Fragment key={point._id}>
+                <Circle
+                  center={{
+                    latitude: point?.location?.coordinates[0],
+                    longitude: point?.location?.coordinates[1],
+                  }}
+                  fillColor={COLORS.lightRed}
+                  strokeColor={COLORS.blue}
+                  strokeWidth={2.5}
+                  radius={point?.radius}
+                />
+                <Marker
+                  image={image}
+                  coordinate={{
+                    latitude: point?.location?.coordinates[0],
+                    longitude: point?.location?.coordinates[1],
+                  }}
+                />
+                <Marker
+                  image={image}
+                  coordinate={{
+                    latitude: point?.location?.coordinates[0],
+                    longitude: point?.location?.coordinates[1],
+                  }}
+                >
+                  <Callout>
+                    <Text style={styles.calloutText}>
+                      Position {point?.location?.coordinates?.toString()}
+                    </Text>
+                  </Callout>
+                </Marker>
+              </Fragment>
             ))}
         </MapView>
       ) : (
@@ -106,5 +140,9 @@ const styles = StyleSheet.create({
   textSubscription: {
     fontSize: 24,
     color: COLORS.red,
+  },
+  calloutText: {
+    fontSize: 14,
+    textAlign: "center",
   },
 });

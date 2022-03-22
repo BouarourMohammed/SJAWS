@@ -36,7 +36,6 @@ export const ProfileScreen: React.FC = () => {
   const { user } = useProfile();
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const dispatch = useDispatch();
-  console.log(user);
 
   const signout = useCallback(async () => {
     try {

@@ -50,6 +50,19 @@ export const AddAlertScreen: React.FC = () => {
     });
   };
 
+  const isNotCoordinate = (value: number[][]) => {
+    return value.some((element) => {
+      if (
+        Number(element[0]) > 90 ||
+        Number(element[0]) < -90 ||
+        Number(element[1]) > 90 ||
+        Number(element[1]) < -90
+      ) {
+        return true;
+      }
+    });
+  };
+
   const [errorValidation, setErrorValidation] = useState("");
 
   const handlePolygonSubmit = useCallback(
